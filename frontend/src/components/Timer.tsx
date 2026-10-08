@@ -3,6 +3,10 @@ import "./Timer.css";
 
 type SessionType = "Work" | "Short Break" | "Long Break";
 
+interface Props {
+  setLockedIn: (locked: boolean) => void;
+}
+
 const formatTime = (seconds: number) => {
   const m = Math.floor(seconds / 60)
     .toString()
@@ -13,7 +17,7 @@ const formatTime = (seconds: number) => {
   return `${m}:${s}`;
 };
 
-export default function Timer() {
+export default function Timer({ setLockedIn }: Props) {
   // settings (minutes)
   const [workMins, setWorkMins] = useState<number>(25);
   const [shortBreakMins, setShortBreakMins] = useState<number>(5);
@@ -36,6 +40,14 @@ export default function Timer() {
       : longBreakMins * 60;
 
   const progress = secondsLeft / totalSeconds;
+
+  useEffect(() => {
+    setLockedIn(running && session === "Work");
+  }, [running, session, setLockedIn]);
+
+  useEffect(() => {
+    return () => setLockedIn(false);
+  }, [setLockedIn]);
 
   useEffect(() => {
     // Only update when settings change AND timer is not running
