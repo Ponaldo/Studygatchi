@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./GooberMenu.css";
 import GooberImg from "../assets/GooberPlaceholder.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GooberInfo from "./GooberInfo";
 import GooberPlayMenu from "./GooberPlayMenu";
 import GooberFoodMenu from "./GooberFoodMenu";
@@ -16,6 +16,7 @@ interface Props {
   level: number;
   money: number;
   currentHealth: number;
+  lockedIn: boolean;
 }
 
 export default function GooberMenu({
@@ -27,9 +28,18 @@ export default function GooberMenu({
   level,
   money,
   currentHealth,
+  lockedIn,
 }: Props) {
   const gooberName = "Goober";
   const [currentPage, setPage] = useState("home");
+
+  useEffect(() => {
+    if (lockedIn) setPage("home");
+  }, [lockedIn]);
+
+  const openPage = (page: string) => {
+    setPage(lockedIn ? "locked" : page);
+  };
 
   return (
     <div className="card bCard" style={{ width: "400px" }}>
@@ -104,7 +114,7 @@ export default function GooberMenu({
               "btn btn-primary interactionNavBtn " +
               (currentPage === "food" ? "active" : "")
             }
-            onClick={() => setPage("food")}
+            onClick={() => openPage("food")}
           >
             Food
           </button>
@@ -114,7 +124,7 @@ export default function GooberMenu({
               "btn btn-primary interactionNavBtn " +
               (currentPage === "play" ? "active" : "")
             }
-            onClick={() => setPage("play")}
+            onClick={() => openPage("play")}
           >
             Play
           </button>
@@ -124,7 +134,7 @@ export default function GooberMenu({
               "btn btn-primary interactionNavBtn " +
               (currentPage === "gift" ? "active" : "")
             }
-            onClick={() => setPage("gift")}
+            onClick={() => openPage("gift")}
           >
             Gift
           </button>
@@ -145,6 +155,11 @@ export default function GooberMenu({
           {currentPage == "play" && <GooberPlayMenu pageSetter={setPage} />}
           {currentPage == "food" && <GooberFoodMenu pageSetter={setPage} />}
           {currentPage == "gift" && <GooberGiftMenu pageSetter={setPage} />}
+          {currentPage == "locked" && (
+            <div style={{ padding: "15px", textAlign: "center" }}>
+              Goober is focusing too. Finish or pause the work session before interacting.
+            </div>
+          )}
         </div>
       </div>
     </div>

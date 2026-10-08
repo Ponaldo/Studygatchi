@@ -17,6 +17,7 @@ function App() {
   const [level, setLevel] = useState(9);
   const [money, setMoney] = useState(0);
   const [currentHealth, setHealth] = useState(50);
+  const [lockedIn, setLockedIn] = useState(false);
 
   return (
     <Router>
@@ -39,11 +40,12 @@ function App() {
           level={level}
           money={money}
           currentHealth={currentHealth}
+          lockedIn={lockedIn}
         />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/settings" element={<SettingsMenu />} />
-          <Route path="/timer" element={<Timer />} />
+          <Route path="/timer" element={<Timer setLockedIn={setLockedIn} />} />
           <Route path="/todo" element={<ToDoList />} />
           <Route path="*" element={<Home />} />
         </Routes>
